@@ -5,6 +5,8 @@ import { RealView } from "./components/Real";
 import { ControlPanelView } from "./components/ContrlPanel";
 import { WinDisplayView } from "./components/WinDisplay";
 
+const SPIN_ANIMATION_TIME = 400;
+
 export class GameScene extends Container {
   private model: SlotModel;
   private store: GameStore;
@@ -43,10 +45,13 @@ export class GameScene extends Container {
     this.render();
   }
 
-  private onSpin() {
+  private async onSpin() {
     if (this.store.isSpinning) return;
 
     this.store.startSpin();
+    this.winDisplay.clear();
+
+    await this.reels.spin(this.model.config.columns);
 
     const spinResult = this.model.getNextSpin(this.store.bet);
     const positions: [number, number][] = [];
@@ -64,7 +69,7 @@ export class GameScene extends Container {
         positions,
         this.model.balance,
       );
-    }, 400);
+    }, SPIN_ANIMATION_TIME);
   }
 
   private onDecreaseBet() {

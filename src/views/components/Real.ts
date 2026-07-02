@@ -1,8 +1,8 @@
-import { Container } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 import { SymbolView } from "./Symbol";
 
-const CELL_W = 100;
-const CELL_H = 100;
+const CELL_W = 80;
+const CELL_H = 80;
 const GAP = 10;
 
 export class RealView extends Container {
@@ -10,6 +10,21 @@ export class RealView extends Container {
 
   constructor(rows: number, cols: number) {
     super();
+
+    const bg = new Graphics();
+    bg.rect(
+      0,
+      0,
+      cols * (CELL_W + GAP) - GAP,
+      rows * (CELL_H + GAP) - GAP,
+    ).fill(0x16213e);
+    bg.rect(
+      0,
+      0,
+      cols * (CELL_W + GAP) - GAP,
+      rows * (CELL_H + GAP) - GAP,
+    ).stroke({ width: 4, color: 0x4cc9f0 });
+    this.addChild(bg);
 
     for (let row = 0; row < rows; row++) {
       this.symbols[row] = [];
@@ -46,5 +61,37 @@ export class RealView extends Container {
         this.symbols[row][col].highlighted = false;
       }
     }
+  }
+
+  async spin(columns: number) {
+    const promises: Promise<void>[] = [];
+    for (let col = 0; col < columns; col++) {
+      promises.push(this.spinColumn(col, col * 100));
+    }
+    return Promise.all(promises);
+  }
+
+  private spinColumn(col: number, delay: number): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const symbols = ["A", "B", "C", "D", "WILD", "SCATTER"];
+        let frameCount = 0;
+        const maxFrames = 10 + Math.floor(Math.random() * 5);
+
+        const interval = setInterval(() => {
+          frameCount++;
+          for (let row = 0; row < this.symbols.length; row++) {
+            const randomSymbol =
+              symbols[Math.floor(Math.random() * symbols.length)];
+            this.symbols[row][col].symbolId = randomSymbol;
+          }
+
+          if (frameCount >= maxFrames) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 50);
+      }, delay);
+    });
   }
 }

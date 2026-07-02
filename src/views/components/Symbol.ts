@@ -35,15 +35,15 @@ export class SymbolView extends Container {
     this.symbolLabel.anchor.set(0.5);
     this.addChild(this.symbolLabel);
 
-    this.draw(90, 90);
-    this.symbolLabel.x = 45;
-    this.symbolLabel.y = 45;
+    this.draw(80, 80);
+    this.symbolLabel.x = 40;
+    this.symbolLabel.y = 40;
   }
 
   set symbolId(value: string) {
     this._symbolId = value;
     this.symbolLabel.text = value;
-    this.draw(90, 90);
+    this.draw(80, 80);
   }
 
   get symbolId(): string {
@@ -52,7 +52,7 @@ export class SymbolView extends Container {
 
   set highlighted(value: boolean) {
     this._highlighted = value;
-    this.draw(90, 90);
+    this.draw(80, 80);
   }
 
   get highlighted(): boolean {
@@ -62,9 +62,10 @@ export class SymbolView extends Container {
   private draw(w: number, h: number) {
     const color = COLORS[this._symbolId] ?? 0x333333;
     this.bg.clear();
-    this.bg.rect(0, 0, w, h).fill({ color });
+    this.bg.roundRect(0, 0, w, h, 8).fill({ color });
+    this.bg.roundRect(0, 0, w, h, 8).stroke({ width: 2, color: 0xffffff });
     if (this._highlighted) {
-      this.bg.rect(0, 0, w, h).stroke({ width: 4, color: 0xffffff });
+      this.bg.roundRect(0, 0, w, h, 8).stroke({ width: 4, color: 0xffd700 });
     }
   }
 }
