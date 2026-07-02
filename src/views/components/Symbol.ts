@@ -43,6 +43,9 @@ export class SymbolView extends Container {
   set symbolId(value: string) {
     this._symbolId = value;
     this.symbolLabel.text = value;
+    const fontSize =
+      value === "WILD" || value === "SCATTER" ? 14 : 18;
+    this.symbolLabel.style.fontSize = fontSize;
     this.draw(80, 80);
   }
 
